@@ -3,7 +3,9 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Text, TextInput, Button, Title } from 'react-native-paper';
 import { View, StyleSheet,  } from 'react-native';
 import Swal from 'sweetalert2';
+import { commonStyles } from '../styles/CommonStyles';
 import { useNavigation } from '@react-navigation/native';
+import { apiRequest } from '../services/API';
 
 const SignupScreen = () => {
   const [nick, setNick] = useState('');
@@ -17,18 +19,7 @@ const SignupScreen = () => {
       const user = { name: nick, password: password, email: email}
       const jsonUser = JSON.stringify(user);
       console.log("este es el json: ", jsonUser);
-      var url = "http://192.168.0.21:8080/APIGalaxy/resources/user/register";
-      console.log('dentro del try');
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'accept': '*/*',
-        },
-        body: jsonUser,
-      });
-      
-      const responseData = await response.json();
+      const responseData = await apiRequest('user/login', 'POST', jsonUser);
      
       // comparativa en el if de si la respuesta vuelve vacia o no, si vuelve vacia mensaje de error en el registro y si no vuelve vacia mensaje de registro correcto y navega a la pantalla de login
       console.log('responseData: ', responseData);
@@ -71,63 +62,41 @@ const SignupScreen = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={commonStyles.container}>
     <LinearGradient
       colors={['#00f260', '#0575e6']}
-      style={styles.container}
+      style={commonStyles.container}
     >
-        <Title style={styles.title}>REGISTRO</Title>
+        <Title style={commonStyles.title}>REGISTRO</Title>
         <TextInput
             placeholder="Nick"
             value={nick}
             onChangeText={setNick}
-            style={styles.input}
+            style={commonStyles.input}
         />
         <TextInput
             placeholder="Email"
             value={email}
             onChangeText={setEmail}
-            style={styles.input}
+            style={commonStyles.input}
         />
         <TextInput
             placeholder="Contraseña"
             value={password}
             onChangeText={setPassword}
             secureTextEntry
-            style={styles.input}
+            style={commonStyles.input}
         />
-        <Button title="Registrarse" mode="contained" onPress={handleSignup} style={styles.button}>
+        <Button title="Registrarse" mode="contained" onPress={handleSignup} style={commonStyles.button}>
         Registrarse
         </Button>
         
-        <Button title="Volver atras" mode="contained" onPress={() =>navigation.navigate('Login')} style={styles.button}>
+        <Button title="Volver atras" mode="contained" onPress={() =>navigation.navigate('Login')} style={commonStyles.button}>
         Volver atras
         </Button>
     </LinearGradient>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    paddingHorizontal: 20,
-  },
-  title: {
-    fontSize: 32,
-    marginBottom: 20,
-    textAlign: 'center',
-    color: '#fff',
-  },
-  input: {
-    backgroundColor: '#fff',
-    marginBottom: 10,
-  },
-  button: {
-    marginTop: 20,
-    paddingVertical: 10,
-  },
-});
 
 export default SignupScreen;

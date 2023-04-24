@@ -20,4 +20,14 @@ export const commonStyles = StyleSheet.create({
       marginTop: 20,
       paddingVertical: 10,
     },
+    logout: {
+      position: 'absolute',
+      bottom: 10,
+      right: 10,
+    },
+    listItem: {
+      marginTop: 20,
+      backgroundColor: '#fff',
+      backgroundColorselected: '#ccc',
+    },
   });

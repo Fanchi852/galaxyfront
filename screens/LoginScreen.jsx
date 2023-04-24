@@ -4,7 +4,8 @@ import { Text, TextInput, Button, Title } from 'react-native-paper';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
 import { commonStyles } from '../styles/CommonStyles';
-import {Swal} from 'sweetalert2';
+import Swal from 'sweetalert2';
+import { apiRequest } from '../services/API';
 
 
 
@@ -13,12 +14,6 @@ const LoginScreen = () => {
   const [password, setPassword] = useState('');
   const navigation = useNavigation();
 
-  const showAlert = (title, message) => {
-    setTimeout(() => {
-      Alert.alert(title, message);
-    }, 100);
-  };
-
   const handleLogin = async () => {
     console.log('dentro del handleloging');
     // Aquí puedes agregar la lógica para validar las credenciales e iniciar sesión
@@ -26,31 +21,27 @@ const LoginScreen = () => {
       const user = { name: name, password: password}
       const jsonUser = JSON.stringify(user);
       console.log("este es el json: ", jsonUser);
-      var url = "http://192.168.0.21:8080/APIGalaxy/resources/user/login";
-      console.log('dentro del try');
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'accept': '*/*',
-        },
-        body: jsonUser,
-      });
+
+      const responseData = await apiRequest('user/login', 'POST', jsonUser);
       
-      const responseData = await response.json();
-     
       console.log("esto debe de ser una sesion de usuario", responseData);
       if (responseData.userSession_id) {
         console.log('usuario correcto');
-        navigation.navigate('ImperiumMenu');
+        navigation.navigate('ImperiumMenu', {userSession_id: responseData.userSession_id});
       } else {
         console.log('usuario incorrecto');
-        showAlert('Error', 'No se pudo iniciar sesión. Verifica tus credenciales e inténtalo de nuevo.');
+        Swal.fire({
+          title: 'Error!',
+          text: 'No se pudo iniciar sesión. Verifica tus credenciales e inténtalo de nuevo.',
+          icon: 'error',
+          confirmButtonText: 'OK'
+        })
+        
      }
 
       // Aquí puedes manejar la respuesta de la API (por ejemplo, guardar el token de acceso)
       console.log('API response:', responseData);
-      showAlert('API response:', JSON.stringify(responseData));
+      
       
 
       // Navegar a otra pantalla o hacer algo más después de un inicio de sesión exitoso
@@ -62,7 +53,7 @@ const LoginScreen = () => {
         icon: 'error',
         confirmButtonText: 'Cool'
       })
-      showAlert('Error', 'No se pudo iniciar sesión. Verifica tus credenciales e inténtalo de nuevo.');
+      
     }
     console.log('Name:', name, 'Password:', password);
   };
