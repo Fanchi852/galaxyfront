@@ -13,6 +13,7 @@ export const apiRequest = async (endpoint, method, data) => {
         body: data,
     });
     const responseData = await response.json();
+    console.log("este es el response desde la api: ", responseData);
     return responseData;
 };
     

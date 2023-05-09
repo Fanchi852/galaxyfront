@@ -26,8 +26,8 @@ const LoginScreen = () => {
       
       console.log("esto debe de ser una sesion de usuario", responseData);
       if (responseData.userSession_id) {
-        console.log('usuario correcto');
-        navigation.navigate('ImperiumMenu', {userSession_id: responseData.userSession_id});
+        console.log('usuario correcto' + responseData.userSession_id);
+        navigation.navigate('ImperiumMenu', {userSessionId: responseData.userSession_id});
       } else {
         console.log('usuario incorrecto');
         Swal.fire({

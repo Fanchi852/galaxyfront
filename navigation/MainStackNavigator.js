@@ -5,6 +5,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import LoginScreen from '../screens/LoginScreen.jsx';
 import SignupScreen from '../screens/SignupScreen.jsx';
 import ImperiumMenuScreen from '../screens/ImperiumMenuScreen.jsx';
+import PlanetScreen from '../screens/PlanetScreen.jsx';
 
 const Stack = createStackNavigator();
 
@@ -25,6 +26,11 @@ const MainStackNavigator = () => {
           name="ImperiumMenu"
           component={ImperiumMenuScreen}
           options={{ title: "Menú del Imperium" }}
+        />
+        <Stack.Screen
+          name="PlanetScreen"
+          component={PlanetScreen}
+          options={{ title: "Planeta" }}
         />
       </Stack.Navigator>
     );
