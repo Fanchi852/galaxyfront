@@ -19,7 +19,7 @@ const SignupScreen = () => {
       const user = { name: nick, password: password, email: email}
       const jsonUser = JSON.stringify(user);
       console.log("este es el json: ", jsonUser);
-      const responseData = await apiRequest('user/login', 'POST', jsonUser);
+      const responseData = await apiRequest('user/register', 'POST', jsonUser);
      
       // comparativa en el if de si la respuesta vuelve vacia o no, si vuelve vacia mensaje de error en el registro y si no vuelve vacia mensaje de registro correcto y navega a la pantalla de login
       console.log('responseData: ', responseData);

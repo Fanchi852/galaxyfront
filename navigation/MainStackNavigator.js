@@ -6,6 +6,7 @@ import LoginScreen from '../screens/LoginScreen.jsx';
 import SignupScreen from '../screens/SignupScreen.jsx';
 import ImperiumMenuScreen from '../screens/ImperiumMenuScreen.jsx';
 import PlanetScreen from '../screens/PlanetScreen.jsx';
+import ResearchScreen from '../screens/ResearchScreen.jsx';
 
 const Stack = createStackNavigator();
 
@@ -32,6 +33,12 @@ const MainStackNavigator = () => {
           component={PlanetScreen}
           options={{ title: "Planeta" }}
         />
+        <Stack.Screen
+          name="ResearchScreen"
+          component={ResearchScreen}
+          options={{ title: "Investigacion" }}
+        />
+        
       </Stack.Navigator>
     );
   };
