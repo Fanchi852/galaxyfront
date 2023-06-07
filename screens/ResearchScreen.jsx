@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, FlatList, ImageBackground, Picker } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image } from 'react-native';
 import { Card, Button } from 'react-native-elements';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { apiRequest } from '../services/API';
+import CustomNavigationButtons from '../components/CustomNavigationButtons';
 import Swal from 'sweetalert2';
 
 const technologiesImages = {
@@ -27,7 +28,7 @@ const TotalScience = ({imperium}) => {
 
   return (
     <Card>
-      <Card.Title>Imvestigacion</Card.Title>
+      <Card.Title>Investigacion</Card.Title>
         <View style={styles.planetInfo}>
           <Text>{`Ciencia acumulada: ${totalScience}`}</Text>
           <Text>{`Los reportes con nuevos datos cientificos llegaran cada hora`}</Text>
@@ -38,17 +39,20 @@ const TotalScience = ({imperium}) => {
 
 // esta funcion actualiza una tecnologia
 async function fetchUpdateTech(tech) {
-  const endpoint = 'Technology/findplanets';
+  const endpoint = 'technology/techupdate';
   const method = 'POST';
   const requestData = {
-    "technology_imperium_id": tech.technology_imperium_id,
+    "technologyImperiumId": tech.technology_imperium_id,
     "level": tech.level + 1
   };
-  console.log("FJMO: requestData:", JSON.stringify(requestData, null, 2));
+  console.log("requestData:", JSON.stringify(requestData, null, 2));
   
   try {
     const UpdateTech = await apiRequest(endpoint, method, JSON.stringify(requestData));
-    console.log("FJMO: UpdateTech:", JSON.stringify(UpdateTech, null, 2));
+    console.log("UpdateTech:", JSON.stringify(UpdateTech, null, 2));
+    if (UpdateTech == 1){
+      
+    }
     return UpdateTech;
   } catch (error) {
     console.error("Error fetching Update Tech:", error);
@@ -84,6 +88,7 @@ const SelectedResearch = ({ selectedTech }) => {
       <Card.Title>Datos de la Tecnologia</Card.Title>
         <View style={styles.planetInfo}>
           <Text>{`Nombre: ${selectedTech.name}`}</Text>
+          <Text>{`Nivel: ${selectedTech.level}`}</Text>
           <Text>{`Descripción: ${selectedTech.descripcion}`}</Text>
           <Text>{`Bono: ${selectedTech.bono}`}</Text>
           <Text>{`Costo: ${selectedTech.basic_cost}`}</Text>
@@ -135,32 +140,6 @@ const ResearchTree = ({ techList, techType, setTechType, setSelectedTech }) => {
   );
 };
 
-
-// Componente para los botones de navegación.
-const NavigationButtons = ({ navigation, imperium, userSessionId }) => {
-  return (
-
-    <View style={styles.menuButtons}>
-      <Button
-      title="Hangar"
-      icon={{ name: 'flask', type: 'font-awesome' }}
-      onPress={() => {
-        navigation.navigate('Hangar', {imperium: imperium, userSessionId: userSessionId});
-        // Navegar a la pantalla de hangares
-      }}
-      />
-      <Button
-        title="Planeta"
-        icon={{ name: 'globe', type: 'font-awesome' }}
-        onPress={() => {
-          navigation.navigate('PlanetScreen', {imperium: imperium, userSessionId: userSessionId});
-          // Navegar a la pantalla de planetas
-        }}
-      />
-    </View>
-  );
-};
-
 const ResearchScreen = () => {
   const navigation = useNavigation();
   const route = useRoute();
@@ -169,18 +148,33 @@ const ResearchScreen = () => {
   const [selectedTech, setSelectedTech] = useState(null);
   const [techType, setTechType] = useState('military');
 
+  const buttonList = [
+    {
+      key: 1,
+      label: "Hangar",
+      navigationScreen: "HangarScreen",
+      params: { imperium: imperium, userSessionId: userSessionId }
+    },
+    {
+      key: 2,
+      label: "Planetas",
+      navigationScreen: "PlanetScreen",
+      params: { imperium: imperium, userSessionId: userSessionId }
+    }
+  ];
+
   // Función para obtener la lista de tecnologías.
   async function fetchTechList(imperium) {
-    const endpoint = 'Technology/techlist';
+    const endpoint = 'technology/techlist';
     const method = 'POST';
     const requestData = {
-      "imperiumId":"5"
+      "imperiumId": imperium.imperiumId
     };
-    console.log("FJMO: requestData:", JSON.stringify(requestData, null, 2));
+    console.log("requestData:", JSON.stringify(requestData, null, 2));
     
     try {
       const techList = await apiRequest(endpoint, method, JSON.stringify(requestData));
-      console.log("FJMO: techList:", JSON.stringify(techList, null, 2));
+      console.log("techList:", JSON.stringify(techList, null, 2));
       return techList;
     } catch (error) {
       console.error("Error fetching technologies list:", error);
@@ -212,11 +206,10 @@ const ResearchScreen = () => {
         setTechType={setTechType} 
         setSelectedTech={setSelectedTech} 
       />
-      <NavigationButtons 
-        navigation={navigation} 
-        imperium={imperium} 
-        userSessionId={userSessionId} 
-      />
+      <CustomNavigationButtons
+          navigation={navigation}
+          buttonList={buttonList}
+        />
     </View>
   );
 }

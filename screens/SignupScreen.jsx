@@ -1,100 +1,129 @@
 import React, { useState } from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Text, TextInput, Button, Title } from 'react-native-paper';
-import { View, StyleSheet,  } from 'react-native';
-import Swal from 'sweetalert2';
+import { TextInput, Button, Title } from 'react-native-paper';
+import { View  } from 'react-native';
 import { commonStyles } from '../styles/CommonStyles';
 import { useNavigation } from '@react-navigation/native';
 import { apiRequest } from '../services/API';
+import AlertModal from '../components/AlertModal';
 
 const SignupScreen = () => {
   const [nick, setNick] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigation = useNavigation();
+  var [alertModalVisible, setAlertModalVisible] = useState(false);
+  const [alertModalData, setAlertModalData] = useState({});
+
+  async function handleCloseAlertModal(){
+    setAlertModalVisible(false);
+    closeModal();
+  }
 
   const handleSignup = async () => {
-    console.log('dentro del handleSignup');
     try {
       const user = { name: nick, password: password, email: email}
       const jsonUser = JSON.stringify(user);
-      console.log("este es el json: ", jsonUser);
       const responseData = await apiRequest('user/register', 'POST', jsonUser);
      
       // comparativa en el if de si la respuesta vuelve vacia o no, si vuelve vacia mensaje de error en el registro y si no vuelve vacia mensaje de registro correcto y navega a la pantalla de login
-      console.log('responseData: ', responseData);
       if (responseData == -1) {
-        Swal.fire({
+        setAlertModalData({
           title: 'Error!',
           text: 'credenciales incorrectas',
           icon: 'error',
-          confirmButtonText: 'OK'
+          buttons: [
+            {
+                name: 'CLOSE',
+                text: 'Aceptar',
+                syle: commonStyles.buttonOk,
+                textStyle: commonStyles.textStyle
+            }
+        ]
         })
+        setAlertModalVisible(true);
         
       } else {
-        console.log('API response:', responseData);
-        Swal.fire({
+        setAlertModalData({
           title: 'Correcto!',
           text: 'Registro correcto. Ahora puedes iniciar sesión.',
           icon: 'success',
-          confirmButtonText: 'Cool',
-          timer: 1500
+          buttons: [
+            {
+                name: 'CLOSE',
+                text: 'Aceptar',
+                syle: commonStyles.buttonOk,
+                textStyle: commonStyles.textStyle
+            }
+        ]
         })
+        setAlertModalVisible(true);
         
         navigation.navigate('Login');
       }
 
-      // Aquí puedes manejar la respuesta de la API (por ejemplo, guardar el token de acceso)
-      
-      
-
       // Navegar a otra pantalla o hacer algo más después de un inicio de sesión exitoso
     } catch (error) {
-      console.log('Error:', error);
-      Swal.fire({
+      setAlertModalData({
         title: 'Error!',
-        text: 'Do you want to continue',
+        text: 'Error inesperado. Inténtalo de nuevo más tarde.',
         icon: 'error',
-        confirmButtonText: 'Cool'
+        buttons: [
+          {
+              name: 'CLOSE',
+              text: 'Aceptar',
+              syle: commonStyles.buttonOk,
+              textStyle: commonStyles.textStyle
+          }
+      ]
       })
-      //showAlert('Error', 'No se pudo iniciar sesión. Verifica tus credenciales e inténtalo de nuevo.');
+      setAlertModalVisible(true);
     }
   };
 
   return (
     <View style={commonStyles.container}>
-    <LinearGradient
-      colors={['#00f260', '#0575e6']}
-      style={commonStyles.container}
-    >
-        <Title style={commonStyles.title}>REGISTRO</Title>
-        <TextInput
-            placeholder="Nick"
-            value={nick}
-            onChangeText={setNick}
-            style={commonStyles.input}
-        />
-        <TextInput
-            placeholder="Email"
-            value={email}
-            onChangeText={setEmail}
-            style={commonStyles.input}
-        />
-        <TextInput
-            placeholder="Contraseña"
-            value={password}
-            onChangeText={setPassword}
-            secureTextEntry
-            style={commonStyles.input}
-        />
-        <Button title="Registrarse" mode="contained" onPress={handleSignup} style={commonStyles.button}>
-        Registrarse
-        </Button>
-        
-        <Button title="Volver atras" mode="contained" onPress={() =>navigation.navigate('Login')} style={commonStyles.button}>
-        Volver atras
-        </Button>
-    </LinearGradient>
+      <LinearGradient
+        colors={['#00f260', '#0575e6']}
+        style={commonStyles.container}
+      >
+        <View>
+            <Title style={commonStyles.title}>REGISTRO</Title>
+            <TextInput
+                placeholder="Nick"
+                value={nick}
+                onChangeText={setNick}
+                style={commonStyles.input}
+            />
+            <TextInput
+                placeholder="Email"
+                value={email}
+                onChangeText={setEmail}
+                style={commonStyles.input}
+            />
+            <TextInput
+                placeholder="Contraseña"
+                value={password}
+                onChangeText={setPassword}
+                secureTextEntry
+                style={commonStyles.input}
+            />
+            <Button title="Registrarse" mode="contained" onPress={handleSignup} style={commonStyles.button}>
+            Registrarse
+            </Button>
+            
+            <Button title="Volver atras" mode="contained" onPress={() =>navigation.navigate('Login')} style={commonStyles.button}>
+            Volver atras
+            </Button>
+          </View>
+          <View>
+            <AlertModal
+              inputVisible = {alertModalVisible}
+              data = {alertModalData}
+              onCloseModal={() => handleCloseAlertModal()}
+            />
+          </View>
+      </LinearGradient>
     </View>
   );
 };

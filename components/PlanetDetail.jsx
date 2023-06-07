@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
-import { Card, Button, Icon } from 'react-native-elements';
 import BuildingCard from '../components/BuildingCard';
-
+/*
 const planetImages = {
   '1.png': require('../assets/planets/1.png'),
   '2.png': require('../assets/planets/2.png'),
@@ -14,44 +13,8 @@ const planetImages = {
   '8.png': require('../assets/planets/8.png'),
   '9.png': require('../assets/planets/9.png'),
 };
-
-const PlanetDetail = ({ planet, onReload, userSessionId, useNavigation, imperium }) => {
-  var [planetResources, setPlanetResources] = useState({
-    normal_quantity: planet.resources.normal_quantity,
-    rare_quantity: planet.resources?.rare_quantity,
-    population_quantity: planet.resources?.population_quantity,
-  });
-
-  const navigation = useNavigation(); // Hook para la navegación
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setPlanetResources(prevResources => ({
-        ...prevResources,
-        normal_quantity: prevResources.normal_quantity + planet.normalOreProduction / 3600,
-        rare_quantity: prevResources.rare_quantity + planet.rareOreProduction / 3600,
-        population_quantity: prevResources.population_quantity + planet.population_changes / 3600
-      }));
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, []);
-
-  useEffect(()=>{
-    setPlanetResources({
-      normal_quantity: planet.resources.normal_quantity,
-      rare_quantity: planet.resources?.rare_quantity,
-      population_quantity: planet.resources?.population_quantity,
-    });
-  },[planet]);
-
-  if(!planetResources){
-    setPlanetResources(() => ({
-      normal_quantity: planet.resources.normal_quantity,
-      rare_quantity: planet.resources.normal_quantity,
-      population_quantity: planet.resources.normal_quantity
-    }));
-  }
+*/
+const PlanetDetail = ({ planet, onReload, userSessionId }) => {
 
   const buildingTypes = [
     { id: 3, name: 'Mina', icon: "diamond", fields:[{fieldname: "normal_capacity", label: "capacidad de almacenamiento de minerales comunes"},{fieldname: "normalOreProduction", label: "Produccion"}] },
@@ -63,38 +26,14 @@ const PlanetDetail = ({ planet, onReload, userSessionId, useNavigation, imperium
   ];
 
   return (
+    <View>
     <ScrollView contentContainerStyle={{justifyContent: 'center'}}>
       <View style={styles.container}>
-        <Card>
-          <Card.Title>Recursos</Card.Title>
-          <View style={styles.resourcesContainer}>
-            <View style={styles.resourceColumn}>
-              <Icon name="diamond" type="font-awesome" />
-              <Text>Minerales normales: {planetResources.normal_quantity.toFixed(2)}</Text>
-            </View>
-            <View style={styles.resourceColumn}>
-              <Icon name="diamond" type="font-awesome" color="blue" />
-              <Text>Minerales raros: {planetResources.rare_quantity.toFixed(2)}</Text>
-            </View>
-            <View style={styles.resourceColumn}>
-              <Icon name="users" type="font-awesome" />
-              <Text>Población: {planetResources.population_quantity.toFixed(0)}</Text>
-            </View>
-          </View>
-        </Card>
-
-
         <View style={styles.planetInfo}>
           <Text>Nombre del planeta: {planet.name}</Text>
           <Text>Coordenadas: {planet.coordinates}</Text>
           <Text>Descripcion: {planet.planetType.description}</Text>
         </View>
-
-        <Card>
-          <Card.Title>Puerto espacial</Card.Title>
-          <Text>Lista de flotas en el planeta (si hay)</Text>
-        </Card>
-
         <View>
           <Text style={styles.buildingTitle}>Construcciones</Text>
           {buildingTypes.map(building => (
@@ -109,26 +48,9 @@ const PlanetDetail = ({ planet, onReload, userSessionId, useNavigation, imperium
             />
           ))}
         </View>
-
-        <View style={styles.menuButtons}>
-          <Button
-          title="ResearchScreen"
-          icon={{ name: 'flask', type: 'font-awesome' }}
-          onPress={() => {
-            navigation.navigate('ResearchScreen', {imperium: imperium, userSessionId: userSessionId});
-            // Navegar a la pantalla de Laboratorio de Investigaciones
-          }}
-          />
-          <Button
-            title="Hangar"
-            icon={{ name: 'rocket', type: 'font-awesome' }}
-            onPress={() => {
-              // Navegar a la pantalla de Hangares
-            }}
-          />
-        </View>
       </View>
     </ScrollView>
+    </View>
   );
 };
 
@@ -136,10 +58,6 @@ const styles = StyleSheet.create({
   container: {
   flex: 1,
   padding: 10,
-  },
-  resourceRow: {
-  flexDirection: 'row',
-  alignItems: 'center',
   },
   planetInfo: {
   borderWidth: 1,
@@ -153,20 +71,6 @@ const styles = StyleSheet.create({
   fontWeight: 'bold',
   textAlign: 'center',
   marginVertical: 10,
-  },
-  menuButtons: {
-  flexDirection: 'row',
-  justifyContent: 'space-around',
-  marginVertical: 10,
-  },
-  resourcesContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-  },
-  resourceColumn: {
-    flexDirection: 'column',
-    alignItems: 'center',
   },
 });
 

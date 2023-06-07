@@ -43,12 +43,12 @@ const PlanetListBanner = ({ planetList, planet, onSelectParent }) => {
         renderItem={({ item }) => (
           <PlanetImage
             planet={item}
-            selected={selectedPlanet === item}
+            selected={selectedPlanet && selectedPlanet.planetId === item.planetId}
             onSelect={changePlanet}
           />
         )}
         keyExtractor={(item) => item.planetId.toString()}
-        showsHorizontalScrollIndicator={false}
+        showsHorizontalScrollIndicator={true}
       />
     </View>
   );

@@ -4,8 +4,8 @@ import { Icon, Button } from 'react-native-elements';
 import { apiRequest } from '../services/API';
 import { commonStyles } from '../styles/CommonStyles';
 import * as Progress from 'react-native-progress';
-import Swal from 'sweetalert2';
-import { useNavigation, useRoute  } from '@react-navigation/native';
+import AlertModal from '../components/AlertModal';
+import { useNavigation  } from '@react-navigation/native';
 
 const BuildingCard = ({ building, planet, fields, onReload, userSessionId  }) => {
   const [expanded, setExpanded] = useState(false);
@@ -15,6 +15,12 @@ const BuildingCard = ({ building, planet, fields, onReload, userSessionId  }) =>
     value: 0.0,
     increment: 0.1
   });
+  var [alertModalVisible, setAlertModalVisible] = useState(false);
+  const [alertModalData, setAlertModalData] = useState({});
+
+  async function handleCloseAlertModal(){
+    setAlertModalVisible(false);
+  }
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -66,19 +72,19 @@ const BuildingCard = ({ building, planet, fields, onReload, userSessionId  }) =>
       }else{
         auxdata ["state"] = "toFinish";
       }
-
-      console.log('FJMO: startDate: ' + startDate.toLocaleDateString(`es-ES`) + ' ' + startDate.toLocaleTimeString(`es-ES`));
-      console.log('FJMO: endDate: ' + endDate.toLocaleDateString(`es-ES`) + ' ' + endDate.toLocaleTimeString(`es-ES`));
-      console.log('FJMO: today: ' + today.toLocaleDateString(`es-ES`) + ' ' + today.toLocaleTimeString(`es-ES`));
-
-      let actualTime = today - startDateLong;
+      /*
+      console.log('startDate: ' + startDate.toLocaleDateString(`es-ES`) + ' ' + startDate.toLocaleTimeString(`es-ES`));
+      console.log('endDate: ' + endDate.toLocaleDateString(`es-ES`) + ' ' + endDate.toLocaleTimeString(`es-ES`));
+      console.log('today: ' + today.toLocaleDateString(`es-ES`) + ' ' + today.toLocaleTimeString(`es-ES`));
+*/
+      let actualTime = today - startDateLong;/*
       console.log('actualTime: ' + actualTime);
-      console.log('timeNeededLong: ' + timeNeededLong);
-      let actualPercentage = actualTime / timeNeededLong;
+      console.log('timeNeededLong: ' + timeNeededLong);*/
+      let actualPercentage = actualTime / timeNeededLong;/*
       console.log('actualPercentage: ' + actualPercentage);
-      console.log('newInProgressBuilding.basic_time_cost: ' + newInProgressBuilding.basic_time_cost);
-      let increment = 1000 / timeNeededLong;
-      console.log('increment: ' + increment);
+      console.log('newInProgressBuilding.basic_time_cost: ' + newInProgressBuilding.basic_time_cost);*/
+      let increment = 1000 / timeNeededLong;/*
+      console.log('increment: ' + increment);*/
       setBuildingProgress({
         value: actualPercentage,
         increment: increment
@@ -100,8 +106,6 @@ const BuildingCard = ({ building, planet, fields, onReload, userSessionId  }) =>
     
     try {
       const responseData = await apiRequest(endpoint, method, JSON.stringify(requestData));
-      // Procesar y utilizar los datos de responseData
-      console.log("FJMO: buildingData:", JSON.stringify(responseData, null, 2));
       return responseData;
     } catch (error) {
       console.error("Error fetching building data:", error);
@@ -120,19 +124,26 @@ const BuildingCard = ({ building, planet, fields, onReload, userSessionId  }) =>
     
     try {
       const responseData = await apiRequest(endpoint, method, JSON.stringify(requestData), userSessionId);
-      console.log("FJMO: startConstruction:", JSON.stringify(responseData, null, 2));
       if (!responseData){
         const navigation = useNavigation();
         navigation.navigate('Login');
       }
       if(responseData.status){
         if(responseData.status === 409){
-          Swal.fire({
-            title: 'Faltan recursos',
-            text: 'No tienes bastantes recursos para este edifcio',
-            icon: 'error',
-            confirmButtonText: 'entendido'
-          });
+          setAlertModalData({
+            title: '¡Error! ¡Faltan recursos!',
+            text: 'No tienes bastantes recursos para este edifcio.',
+            icon: 'warning',
+            buttons: [
+              {
+                  name: 'CLOSE',
+                  text: 'Aceptar',
+                  syle: commonStyles.buttonOk,
+                  textStyle: commonStyles.textStyle
+              }
+          ]
+          })
+          setAlertModalVisible(true);
         }
       }else{
         onReload();
@@ -145,7 +156,6 @@ const BuildingCard = ({ building, planet, fields, onReload, userSessionId  }) =>
   };
 
   const finishConstruction = async () => {
-    console.log("FJMO: inProgressBuilding:", JSON.stringify(inProgressBuilding, null, 2));
     const endpoint = 'parcels/endconstruction';
     const method = 'POST';
     const requestData = {
@@ -154,8 +164,6 @@ const BuildingCard = ({ building, planet, fields, onReload, userSessionId  }) =>
     
     try {
       const responseData = await apiRequest(endpoint, method, JSON.stringify(requestData), userSessionId);
-      // Procesar y utilizar los datos de responseData
-      console.log("FJMO: finishConstruction:", JSON.stringify(responseData, null, 2));
       onReload();
       await loadData();
       return responseData;
@@ -205,6 +213,13 @@ const BuildingCard = ({ building, planet, fields, onReload, userSessionId  }) =>
           </View>
         )}
       </View>
+      <View>
+          <AlertModal
+            inputVisible = {alertModalVisible}
+            data = {alertModalData}
+            onCloseModal={() => handleCloseAlertModal()}
+          />
+        </View>
     </TouchableOpacity>
   );
 };

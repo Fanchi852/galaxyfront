@@ -1,19 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import {
-  View,
-  FlatList,
-  TouchableOpacity,
-  StyleSheet,
-  Image,
-  Modal,
-  Alert,
-} from 'react-native';
+import { View, FlatList, TouchableOpacity, Image } from 'react-native';
 import { Asset } from 'expo-asset';
-import {TextInput, Button, List, Text, Divider} from 'react-native-paper';
+import { TextInput, Button, Text } from 'react-native-paper';
 import { commonStyles } from '../styles/CommonStyles';
-import { useNavigation, useRoute  } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { apiRequest } from '../services/API';
-import Swal from 'sweetalert2';
+import AlertModal from '../components/AlertModal';
 
 var myUserSessionId = null;
 var imperiums = null;
@@ -37,10 +29,8 @@ const getPlanetImageUrl = async (imageFilename) => {
 
 //funcion para buscar un imperio en una lista de imperios
 const findEmpire = (empireList, empireName) => {
-  console.log('dentro de la funcion findEmpire',empireList,empireName);
   for (let i = 0; i < empireList.length; i++) {
     if (empireList[i].name === empireName) {
-      console.log('nombre a comparar :',empireList[i].name,' se compara con: ',empireName)
       return empireList[i];
     }
   }
@@ -51,10 +41,9 @@ const findEmpire = (empireList, empireName) => {
 const EmpireCard = React.memo(({ imperium, onDelete }) => {
   const navigation = useNavigation(); // Hook para la navegación
   const goToPlanetScreen = () => {
-    console.log('imperium name: ',imperium.empireName);
     // Busca el imperio en la lista de imperios
     const myImperium = findEmpire(imperiums, imperium.empireName);
-    navigation.navigate('PlanetScreen', {imperium: myImperium, userSessionId: myUserSessionId});
+    navigation.navigate('PlanetScreen', { imperium: myImperium, userSessionId: myUserSessionId });
   };
   return (
     // Muestra la imagen del imperio si está disponible, de lo contrario muestra un marcador de posición.
@@ -63,7 +52,7 @@ const EmpireCard = React.memo(({ imperium, onDelete }) => {
     <View style={commonStyles.card}>
       <View style={commonStyles.leftSection}>
         {imperium.imageUrl ? (
-          <Image source={imperium.imageUrl ? {uri: imperium.imageUrl} : null} style={commonStyles.image} />
+          <Image source={imperium.imageUrl ? { uri: imperium.imageUrl } : null} style={commonStyles.image} />
         ) : (
           <View style={commonStyles.imagePlaceholder} />
         )}
@@ -99,6 +88,61 @@ const ImperiumMenuScreen = () => {
   const userSessionId = route.params.userSessionId; // Obtiene el userSession_id desde los parámetros de la ruta
   myUserSessionId = userSessionId;
 
+  // variables para el modal de alertas
+  var [alertModalVisible, setAlertModalVisible] = useState(false);
+  const [alertModalData, setAlertModalData] = useState({});
+  const [empireToDelete, setEmpireToDelete] = useState({});
+
+  async function handleCloseAlertModal(buttonNamePressed) {
+    setAlertModalVisible(false);
+
+    if (buttonNamePressed === 'CONFIRM') {
+      try {
+        const endpoint = 'imperium/deleteimperium';
+        const method = 'POST';
+        const requestData = {
+          session_id: userSessionId,
+          imperium_name: empireToDelete.empireName,
+        };
+        const responseData = await apiRequest(endpoint, method, JSON.stringify(requestData));
+        const updatedEmpireList = empireList.filter(imperium => imperium.empireName !== empireToDelete.empireName);
+        //const updatedEmpireList = empireList.filter((_, i) => i !== index);
+        updateEmpireLists(updatedEmpireList);
+        setAlertModalData({
+          title: 'Eliminado!',
+          text: 'El imperio ha sido eliminado.',
+          icon: 'ok',
+          buttons: [
+            {
+              name: 'CLOSE',
+              text: 'Aceptar',
+              syle: commonStyles.buttonOk,
+              textStyle: commonStyles.textStyle
+            }
+          ]
+        })
+        setAlertModalVisible(true);
+      } catch (error) {
+        setAlertModalData({
+          title: 'Error!',
+          text: 'Error al eliminar el imperio',
+          icon: 'error',
+          buttons: [
+            {
+              name: 'CLOSE',
+              text: 'Aceptar',
+              syle: commonStyles.buttonOk,
+              textStyle: commonStyles.textStyle
+            }
+          ]
+        })
+        setAlertModalVisible(true);
+      }
+    } else {
+      setEmpireToDelete(null);
+    }
+  }
+
   const updateEmpireLists = (newEmpireList) => {
     setEmpireList(newEmpireList);
     setOriginalEmpireList(newEmpireList);
@@ -114,11 +158,9 @@ const ImperiumMenuScreen = () => {
         const requestData = {
           userSession_id: userSessionId,
         };
-        console.log('Request data:', requestData);
         // Realizar la petición a la API y almacenar la respuesta en una variable
         const responseData = await apiRequest(endpoint, method, JSON.stringify(requestData));
         // Actualiza la lista de imperios con la respuesta del servidor
-        console.log('Response data:', responseData);
         imperiums = responseData;
         // Mapea la estructura de los datos recibidos de la API a la estructura esperada
         const mappedData = await Promise.all(responseData.map(async empire => {
@@ -133,7 +175,20 @@ const ImperiumMenuScreen = () => {
         // Actualiza la lista original y la lista de imperios con los datos mapeados
         updateEmpireLists(mappedData);
       } catch (error) {
-        console.error('Error fetching empires:', error);
+        setAlertModalData({
+          title: 'Error!',
+          text: 'Error inesperado.',
+          icon: 'error',
+          buttons: [
+            {
+              name: 'CLOSE',
+              text: 'Aceptar',
+              syle: commonStyles.buttonOk,
+              textStyle: commonStyles.textStyle
+            }
+          ]
+        })
+        setAlertModalVisible(true);
       }
     };
     fetchEmpires();
@@ -142,32 +197,57 @@ const ImperiumMenuScreen = () => {
   // Función para agregar un nuevo imperio a la lista
   const addEmpire = async () => {
     try {
-    const endpoint = 'imperium/createImperium';
-    const method = 'POST';
-    const requestData = {
-    session_id: userSessionId,
-    name: empireName,
-    };
-    const responseData = await apiRequest(endpoint, method, JSON.stringify(requestData));
-    if (responseData.hasOwnProperty('name')) {
-      imperiums.push(responseData);
-      console.log('estamos dentro de la parte donde se agrega el imperio');
-      const imageUrl = await getPlanetImageUrl(responseData.planet.planetType.image);
-      const newEmpire = {
-        empireName: empireName,
-        capitalName: responseData.planet.name,
-        coordinates: responseData.planet.coordinates,
-        imageUrl: imageUrl  || '',
+      const endpoint = 'imperium/createImperium';
+      const method = 'POST';
+      const requestData = {
+        session_id: userSessionId,
+        name: empireName,
       };
-      const updatedEmpireList = [...empireList, newEmpire];
-      updateEmpireLists(updatedEmpireList);
-      setEmpireName('');
-    } else {
-      Alert.alert('Error', 'No se pudo crear el imperio');
+      const responseData = await apiRequest(endpoint, method, JSON.stringify(requestData));
+      if (responseData.hasOwnProperty('name')) {
+        imperiums.push(responseData);
+        const imageUrl = await getPlanetImageUrl(responseData.planet.planetType.image);
+        const newEmpire = {
+          empireName: empireName,
+          capitalName: responseData.planet.name,
+          coordinates: responseData.planet.coordinates,
+          imageUrl: imageUrl || '',
+        };
+        const updatedEmpireList = [...empireList, newEmpire];
+        updateEmpireLists(updatedEmpireList);
+        setEmpireName('');
+      } else {
+        setAlertModalData({
+          title: 'Error!',
+          text: 'Error inesperado. No se pudo crear el imperio.',
+          icon: 'error',
+          buttons: [
+            {
+              name: 'CLOSE',
+              text: 'Aceptar',
+              syle: commonStyles.buttonOk,
+              textStyle: commonStyles.textStyle
+            }
+          ]
+        })
+        setAlertModalVisible(true);
+      }
+    } catch (error) {
+      setAlertModalData({
+        title: 'Error!',
+        text: 'Error inesperado. Error al agregar el imperio.',
+        icon: 'error',
+        buttons: [
+          {
+            name: 'CLOSE',
+            text: 'Aceptar',
+            syle: commonStyles.buttonOk,
+            textStyle: commonStyles.textStyle
+          }
+        ]
+      })
+      setAlertModalVisible(true);
     }
-  } catch (error) {
-    console.error('Error al agregar el imperio:', error);
-  }
   };
 
   // Función para buscar imperios en la lista
@@ -186,36 +266,32 @@ const ImperiumMenuScreen = () => {
 
   // Función para eliminar un imperio de la lista
   const deleteEmpire = async (index) => {
-    const empireToDelete = empireList[index];
+    let empireToDeleteAux = empireList[index];
+    setEmpireToDelete(empireToDeleteAux);
     const showDeleteAlert = async () => {
-      const result = await Swal.fire({
+
+      setAlertModalData({
         title: '¿Estás seguro?',
         text: 'No podrás deshacer esta acción.',
         icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Sí, eliminar',
+        buttons: [
+          {
+            name: 'CONFIRM',
+            text: 'Sí, eliminar',
+            syle: commonStyles.buttonOk,
+            textStyle: commonStyles.textStyle
+          },
+          {
+            name: 'CLOSE',
+            text: 'Cancelar',
+            syle: commonStyles.buttonCancel,
+            textStyle: commonStyles.textStyle
+          }
+        ]
       });
-    
-      if (result.isConfirmed) {
-        try {
-          const endpoint = 'imperium/deleteimperium';
-          const method = 'POST';
-          const requestData = {
-            session_id: userSessionId,
-            imperium_name: empireToDelete.empireName,
-          };
-          const responseData = await apiRequest(endpoint, method, JSON.stringify(requestData));
-          const updatedEmpireList = empireList.filter((_, i) => i !== index);
-          updateEmpireLists(updatedEmpireList);
-          Swal.fire('Eliminado', 'El imperio ha sido eliminado.', 'success');
-        } catch (error) {
-          console.error('Error al eliminar el imperio:', error);
-        }
-      }
+      setAlertModalVisible(true);
     };
-    
+
     showDeleteAlert();
   };
 
@@ -227,36 +303,50 @@ const ImperiumMenuScreen = () => {
 
   return (
     <View style={commonStyles.container}>
-      <Text style={commonStyles.title}>Menu Imperium</Text>
-      <TextInput
-        label="Nombre del imperio"
-        value={empireName}
-        onChangeText={(text) => setEmpireName(text)}
-      />
-      <View style={commonStyles.buttonRow}>
-        <Button mode="contained" onPress={addEmpire}>
-          Añadir
-        </Button>
-        <Button mode="contained" onPress={searchEmpire}>
-          Buscar
-        </Button>
-      </View>
-      <FlatList
-        data={empireList}
-        renderItem={({ item, index }) => (
-          <EmpireCard
-            key={index}
-            {...item}
-            imperium={item}
-            onDelete={() => deleteEmpire(index)}
+      <View>
+        <Text style={commonStyles.texTitle}>Menu Imperium</Text>
+        <View>
+          <TextInput
+            label="Nombre del imperio"
+            value={empireName}
+            style={commonStyles.inputImperiumSearch}
+            onChangeText={(text) => setEmpireName(text)}
           />
-        )}
-        keyExtractor={(_, index) => index.toString()}
-        extraData={originalEmpireList}
-      />
-      <Button mode="contained" onPress={logout} style={commonStyles.logoutButton}>
-        Cerrar sesión
-      </Button>
+        </View>
+        <View style={commonStyles.horizontalAlign}>
+          <Button mode="contained" style={commonStyles.brandButton} onPress={addEmpire}>
+            Añadir
+          </Button>
+          <Button mode="contained" style={commonStyles.brandButton} onPress={searchEmpire}>
+            Buscar
+          </Button>
+        </View>
+        <FlatList
+          data={empireList}
+          renderItem={({ item, index }) => (
+            <EmpireCard
+              key={index}
+              {...item}
+              imperium={item}
+              onDelete={() => deleteEmpire(index)}
+            />
+          )}
+          keyExtractor={(_, index) => index.toString()}
+          extraData={originalEmpireList}
+        />
+        <View style={commonStyles.horizontalAlign}>
+          <Button mode="contained" onPress={logout} style={commonStyles.logoutButton}>
+            Cerrar sesión
+          </Button>
+        </View>
+      </View>
+      <View>
+        <AlertModal
+          inputVisible={alertModalVisible}
+          data={alertModalData}
+          onCloseModal={(buttonNamePressed) => handleCloseAlertModal(buttonNamePressed)}
+        />
+      </View>
     </View>
   );
 };

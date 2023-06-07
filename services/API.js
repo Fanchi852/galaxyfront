@@ -1,5 +1,5 @@
 
-const API_URL = 'http://192.168.0.27:8080/APIGalaxy/resources/';
+const API_URL = 'http://192.168.0.25:8080/APIGalaxy/resources/';
 
 export const apiRequest = async (endpoint, method, data, usersession) => {
 
@@ -23,7 +23,7 @@ export const apiRequest = async (endpoint, method, data, usersession) => {
     if(usersession === undefined || cheackSession){
         
         const url = API_URL + endpoint;
-        console.log("este es el endpoint: ", endpoint, "este es el method: ", method, "este es el data: ", data, "este es el url: ", url);
+        console.log("----> PETICION A LA API: Endpoint: ", endpoint, ", method: ", method, ", data: ", JSON.stringify(data, null, 2), ", url: ", url);
         const response = await fetch(url, {
             method: method,
             headers: {
@@ -38,7 +38,7 @@ export const apiRequest = async (endpoint, method, data, usersession) => {
         }else{
             responseData = {status: response.status};
         }
-        console.log("este es el response desde la api: ", responseData);
+        console.log("----> RESPUESTA DE LA API:  response: ", JSON.stringify(responseData, null, 2));
 
         return responseData;
         
