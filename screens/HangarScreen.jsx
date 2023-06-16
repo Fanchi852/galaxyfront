@@ -11,6 +11,8 @@ import CustomNavigationButtons from '../components/CustomNavigationButtons';
 import PlanetResources from '../components/PlanetResources';
 import Swal from 'sweetalert2';
 
+import ShipyardsDetails from '../components/ShipyardsDetails';
+
 const HangarScreen = ({ route }) => {
   const { imperium, userSessionId } = route.params;
   const [planets, setPlanets] = useState([]);
@@ -80,6 +82,10 @@ const HangarScreen = ({ route }) => {
           planet={selectedPlanet}
         />
         <FleetsDetail 
+          planet={selectedPlanet}
+          imperium={imperium}
+        />
+        <ShipyardsDetails
           planet={selectedPlanet}
           imperium={imperium}
         />

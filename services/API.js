@@ -30,7 +30,7 @@ export const apiRequest = async (endpoint, method, data, usersession) => {
                 'Content-Type': 'application/json',
                 'accept': '*/*',
             },
-            body: data,
+            body: method === 'POST' ? data : null,
         });
         var responseData;
         if(response.status === 200){

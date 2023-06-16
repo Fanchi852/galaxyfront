@@ -22,6 +22,24 @@ const SignupScreen = () => {
 
   const handleSignup = async () => {
     try {
+      if (nick == '' || email == '' || password == '') {
+        setAlertModalData({
+          title: 'Error!',
+          text: 'Debes introducir todos los datos.',
+          icon: 'error',
+          buttons: [
+            {
+                name: 'CLOSE',
+                text: 'Aceptar',
+                syle: commonStyles.buttonOk,
+                textStyle: commonStyles.textStyle
+            }
+        ]
+        })
+        setAlertModalVisible(true);
+        return;
+      }
+      
       const user = { name: nick, password: password, email: email}
       const jsonUser = JSON.stringify(user);
       const responseData = await apiRequest('user/register', 'POST', jsonUser);

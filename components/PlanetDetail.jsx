@@ -1,6 +1,8 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import BuildingCard from '../components/BuildingCard';
+import { Card, Icon } from 'react-native-elements';
+import { commonStyles } from '../styles/CommonStyles';
 /*
 const planetImages = {
   '1.png': require('../assets/planets/1.png'),
@@ -26,31 +28,40 @@ const PlanetDetail = ({ planet, onReload, userSessionId }) => {
   ];
 
   return (
-    <View>
     <ScrollView contentContainerStyle={{justifyContent: 'center'}}>
-      <View style={styles.container}>
+      <View style={commonStyles.subContainer}>
         <View style={styles.planetInfo}>
-          <Text>Nombre del planeta: {planet.name}</Text>
-          <Text>Coordenadas: {planet.coordinates}</Text>
-          <Text>Descripcion: {planet.planetType.description}</Text>
+          <View style={[commonStyles.horizontalAlign, commonStyles.textContainer]}>
+            <Text style={commonStyles.texSubTitle}>Nombre del planeta:</Text>
+            <Text style={commonStyles.textStyle}>{planet.name}</Text>
+          </View>
+          <View style={[commonStyles.horizontalAlign, commonStyles.textContainer]}>
+            <Text style={commonStyles.texSubTitle}>Coordenadas:</Text>
+            <Text style={commonStyles.textStyle}>{planet.coordinates}</Text>
+          </View>
+          <View style={[commonStyles.horizontalAlign, commonStyles.textContainer]}>
+            <Text style={commonStyles.texSubTitle}>Descripcion:</Text>
+            <Text style={[commonStyles.textStyle, {textAlign: "justifyContent"}]}>{planet.planetType.description}</Text>
+          </View>
         </View>
         <View>
-          <Text style={styles.buildingTitle}>Construcciones</Text>
-          {buildingTypes.map(building => (
-            <BuildingCard 
-              key={building.id} 
-              building={building} 
-              color={building.color}
-              planet={planet}
-              fields = {building.fields}
-              userSessionId={userSessionId}
-              onReload={() => onReload()}
-            />
-          ))}
+          <Card containerStyle= {commonStyles.subContainer}>
+            <Card.Title>Construcciones</Card.Title>
+            {buildingTypes.map(building => (
+              <BuildingCard 
+                key={building.id} 
+                building={building} 
+                color={building.color}
+                planet={planet}
+                fields = {building.fields}
+                userSessionId={userSessionId}
+                onReload={() => onReload()}
+              />
+            ))}
+          </Card>          
         </View>
       </View>
     </ScrollView>
-    </View>
   );
 };
 

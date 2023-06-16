@@ -3,22 +3,29 @@ import { StyleSheet } from "react-native";
 export const commonStyles = StyleSheet.create({
   texTitle: {
     fontSize: 32,
-    //marginBottom: 20,
     fontWeight: 'bold',
     textAlign: 'center',
     color: '#fff',
   },
+  texSubTitle: {
+    fontSize: 18,
+    flex: 1,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    color: '#757575',
+  },
+  textContainer: {
+    flex: 1,
+    padding: 5,
+  },
   brandButton: {
     backgroundColor: '#7C4DFF',
     borderRadius: 15,
-    //marginTop: '3%',
-    //marginBottom: '0%',
-    //marginRight: '25%',
-    //marginLeft: '25%'
     margin: '1%'
   },
   horizontalAlign: {
     margin: '1%',
+    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center'
@@ -39,6 +46,14 @@ export const commonStyles = StyleSheet.create({
     fontSize:14,
     flex: 1,
     textAlign: 'center',
+    color: "#212121"
+  },
+  textStyleLeft: {
+    fontSize:14,
+    flex: 1,
+    textAlign: 'left',
+    marginLeft: 5,
+    color: "#212121"
   },
   buttonOk: {
     borderRadius: 20,
@@ -60,8 +75,10 @@ export const commonStyles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   subContainer: {
-    flex: 1,
+    //flex: 1,
     justifyContent: 'center',
+    marginBottom: 10,
+    marginTop: 10,
     //backgroundColor: '#2c3e50',
     backgroundColor: '#CFD8DC',
     paddingHorizontal: 20

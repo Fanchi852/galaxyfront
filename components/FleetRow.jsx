@@ -1,35 +1,43 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Card, Button } from 'react-native-elements';
+import { commonStyles } from '../styles/CommonStyles';
 
 const FleetRow = ({ fleet, onOpenActionsModal, onOpenResourcesModal, imperium }) => {
+
+    if(fleet.imperium.imperiumId == imperium.imperiumId){
+        fleet.textColor = "green";
+    }else{
+        fleet.textColor = "red";
+    }
+
     return (
         <Card>
-            <View style={[styles.container, {backgroundColor: fleet.imperium.imperiumId == imperium.imperiumId ? "#4DF5C9" : "#F58D4D"}]}>
-                <View style={styles.textContainer}>
-                    <Text style={styles.title}>Nombre</Text>
-                    <Text style={styles.text}>{fleet.name}</Text>
+            <View style={styles.container}>
+                <View style={commonStyles.textContainer}>
+                    <Text style={commonStyles.texSubTitle}>Nombre</Text>
+                    <Text style={[commonStyles.textStyle, {color: fleet.textColor}]}>{fleet.name}</Text>
                 </View>
-                <View style={styles.textContainer}>
-                    <Text style={styles.title}>Coordenadas</Text>
-                    <Text style={styles.text}>{fleet.coordinates}</Text>
+                <View style={commonStyles.textContainer}>
+                    <Text style={commonStyles.texSubTitle}>Coordenadas</Text>
+                    <Text style={[commonStyles.textStyle, {color: fleet.textColor}]}>{fleet.coordinates}</Text>
                 </View>
-                <View style={styles.textContainer}>
-                    <Text style={styles.title}>Tipo</Text>
-                    <Text style={styles.text}>{fleet.fleetType.ftype}</Text>
+                <View style={commonStyles.textContainer}>
+                    <Text style={commonStyles.texSubTitle}>Tipo</Text>
+                    <Text style={[commonStyles.textStyle, {color: fleet.textColor}]}>{fleet.fleetType.ftype}</Text>
                 </View>
-                <View style={styles.textContainer}>
-                    <Text style={styles.title}>Destino</Text>
-                    <Text style={styles.text}>{fleet.destination}</Text>
+                <View style={commonStyles.textContainer}>
+                    <Text style={commonStyles.texSubTitle}>Destino</Text>
+                    <Text style={[commonStyles.textStyle, {color: fleet.textColor}]}>{fleet.destination}</Text>
                 </View>
-                <View style={[styles.textContainer, {flexWrap: 'wrap'}]}>
+                <View style={[commonStyles.textContainer, {flexWrap: 'wrap'}]}>
                     <Button
-                        buttonStyle={styles.actionbutton}
+                        buttonStyle={commonStyles.brandButton}
                         title='Ordenes'
                         onPress={() => onOpenActionsModal(fleet)}
                     />
                     <Button
-                        buttonStyle={styles.actionbutton}
+                        buttonStyle={commonStyles.brandButton}
                         title='Recursos'
                         onPress={() => onOpenResourcesModal(fleet)}
                     />
@@ -43,26 +51,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         flex: 1,
         padding: 10,
-    },
-    textContainer: {
-        flex: 1,
-        padding: 5,
-    },
-    actionbutton: {
-        margin: 5,
-        flex: 1,
-        flexWrap: 'wrap',
-    },
-    title: {
-        fontSize:18,
-        flex: 1,
-        fontWeight: 'bold',
-        textAlign: 'center',
-    },
-    text: {
-        fontSize:14,
-        flex: 1,
-        textAlign: 'center',
     },
 });
 export default FleetRow;

@@ -402,7 +402,7 @@ const FleetResources = ( {inputVisible, fleet, planet, onCloseModal} ) => {
            />
           <View style={styles.modalView}>
             <View style={styles.centeredView}>
-                <Text style={styles.title}>Transporte de recursos para la flota</Text>
+                <Text style={commonStyles.texSubTitle}>Transporte de recursos para la flota</Text>
               <Text style={styles.modalText}>{fleet.name}</Text>
               <Text style={styles.modalText}>{fleetTypestranslation[fleet.fleetType.ftype]}</Text>
             </View>
@@ -458,20 +458,20 @@ const FleetResources = ( {inputVisible, fleet, planet, onCloseModal} ) => {
               </View>
               <View style={styles.fila}>
                 <Pressable
-                  style={[styles.button, styles.buttonOpen]}
+                  style={[styles.button, commonStyles.brandButton]}
                   onPress={() => transferToFleet()}>
-                    <Text style={styles.textStyle}>Planeta --{'>'} Flota</Text>
+                    <Text style={commonStyles.brandButton}>Planeta --{'>'} Flota</Text>
                   </Pressable>
                   <Pressable
-                  style={[styles.button, styles.buttonOpen]}
+                  style={[styles.button, commonStyles.brandButton]}
                   onPress={() => transferToPlanet()}>
-                    <Text style={styles.textStyle}>Planeta {'<'}-- Flota</Text>
+                    <Text style={commonStyles.brandButton}>Planeta {'<'}-- Flota</Text>
                   </Pressable>
               </View>
             </View>
             <View style={styles.centeredView}>
               <Pressable
-                style={[styles.button, styles.buttonClose]}
+                style={[styles.button, commonStyles.buttonCancel]}
                 onPress={() => closeModal()}>
                 <Text style={styles.textStyle}>Cerrar Recursos</Text>
               </Pressable>

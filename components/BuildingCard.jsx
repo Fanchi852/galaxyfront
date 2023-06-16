@@ -174,25 +174,40 @@ const BuildingCard = ({ building, planet, fields, onReload, userSessionId  }) =>
 
   return (
     <TouchableOpacity onPress={handlePress}>
-      <View style={{ borderWidth: 1, borderColor: '#ccc', borderRadius: 5, padding: 10, marginBottom: 10 }}>
-        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+      <View style={[commonStyles.subContainer, {backgroundColor: "#BDBDBD"}]}>
+        <View style={[commonStyles.horizontalAlign, {justifyContent: 'left'}]}>
           <Icon name={building.icon} color={building.color} type="font-awesome" />
-          <Text>{building.name}</Text>
+          <Text style={[commonStyles.texSubTitle, {textAlign:'left', marginLeft: 5}]}>{building.name}</Text>
         </View>
         {expanded && buildingData && (
           <View>
-            <Text>Número de ampliaciones: {buildingData.count}</Text>
+            <View style={[commonStyles.horizontalAlign, {justifyContent: 'left', alignItems: 'left'}]}>
+              <Text style={[commonStyles.textStyleLeft, {fontWeight: 'bold'}]}>Número de ampliaciones:</Text>
+              <Text style={[commonStyles.textStyleLeft]}>{buildingData.count}</Text>
+            </View>
             {fields && fields.map(field => (
-              <Text key={field.fieldname}>{field.label}: {buildingData.planet.resources[field.fieldname]?buildingData.planet.resources[field.fieldname]:buildingData.planet[field.fieldname]}</Text>
+              <View key={field.fieldname} style={[commonStyles.horizontalAlign, {justifyContent: 'left', alignItems: 'left'}]}>
+                <Text style={[commonStyles.textStyleLeft, {fontWeight: 'bold'}]}>{field.label}: </Text>
+                <Text style={[commonStyles.textStyleLeft]}>{buildingData.planet.resources[field.fieldname]?buildingData.planet.resources[field.fieldname]:buildingData.planet[field.fieldname]}</Text>
+              </View>
             ))}
-            <View>
-              <Text>Coste construccion: </Text>
-              <Text>Mineral normal: {buildingData.parcel.basic_normal_cost}</Text>
-              <Text>Mineral raro: {buildingData.parcel.basic_rare_cost}</Text>
-              <Text>Tiempo: {buildingData.parcel.basic_time_cost}</Text>
+            <View style={[commonStyles.horizontalAlign, {justifyContent: 'left', alignItems: 'left'}]}>
+              <Text style={[commonStyles.textStyleLeft, {fontWeight: 'bold'}]}>Número de ampliaciones:</Text>
+              <Text style={[commonStyles.textStyleLeft]}>{buildingData.count}</Text>
+            </View>
+            <View style={[commonStyles.horizontalAlign, {justifyContent: 'left', alignItems: 'left'}]}>
+              <Text style={[commonStyles.texSubTitle, {textAlign:'left', marginLeft: 5}]}>Coste construccion:</Text>
+            </View>
+            <View style={[commonStyles.horizontalAlign, {justifyContent: 'left', alignItems: 'left'}]}>
+              <Text style={[commonStyles.textStyleLeft, {fontWeight: 'bold'}]}>Mineral raro:</Text>
+              <Text style={[commonStyles.textStyleLeft]}>{buildingData.parcel.basic_rare_cost}</Text>
+            </View>
+            <View style={[commonStyles.horizontalAlign, {justifyContent: 'left', alignItems: 'left'}]}>
+              <Text style={[commonStyles.textStyleLeft, {fontWeight: 'bold'}]}>Tiempo:</Text>
+              <Text style={[commonStyles.textStyleLeft]}>{buildingData.parcel.basic_time_cost}</Text>
             </View>
             {buildingData.state === "ready" && (
-              <Button style={commonStyles.button}
+              <Button buttonStyle={commonStyles.brandButton}
                 title="Ampliar edificio"
                 onPress={() => {
                   startConstruction()
@@ -203,7 +218,7 @@ const BuildingCard = ({ building, planet, fields, onReload, userSessionId  }) =>
               <Progress.Bar progress={buildingProgress.value} width={200} animated={true} />
             )}
             {buildingData.state === "toFinish" && (
-              <Button style={commonStyles.button}
+              <Button buttonStyle={commonStyles.brandButton}
               title="Terminar construccion"
               onPress={() => {
                 finishConstruction()

@@ -99,8 +99,7 @@ const LoginScreen = () => {
             </Button>
           </View>
         </View>
-        <View
-        >
+        <View>
           <AlertModal
             inputVisible = {alertModalVisible}
             data = {alertModalData}

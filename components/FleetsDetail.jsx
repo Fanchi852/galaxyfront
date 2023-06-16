@@ -13,7 +13,7 @@ const FleetsDetail = ({ planet, onReload }) => {
   const [resourcesModalVisible, setresourcesModalVisible] = useState(false);
   const [selectedFleet, setSelectedFleet] = useState();
 
-  //trae una lista con todos las flotas del imperio
+  //trae una lista con todos las flotas que estan en el planeta o se dirigen a el
   async function fetchFleetsList(planet) {
     const endpoint = 'fleet/listfleet';
     const method = 'POST';
@@ -47,19 +47,19 @@ const FleetsDetail = ({ planet, onReload }) => {
     setresourcesModalVisible(true);
   }
 
-  async function changeModalVisible(outputVisible){
-    setModalVisible(outputVisible);
+  async function changeModalVisible(){
+    setModalVisible(false);
+    onReload();
   }
   async function handleCloseResourcesModal(){
     setresourcesModalVisible(false);
     onReload();
   }
 
-  console.log("FleetsDetail: ", fleets);
 
   return (
     <View style={commonStyles.subContainer}>
-      {selectedFleet ? <FleetAction inputVisible={modalVisible} fleet={selectedFleet} onChangeModalVisible={(outputVisible) => changeModalVisible(outputVisible)}/> : null}
+      {selectedFleet ? <FleetAction inputVisible={modalVisible} fleet={selectedFleet} onChangeModalVisible={() => changeModalVisible()}/> : null}
       {selectedFleet ? <FleetResources inputVisible={resourcesModalVisible} fleet={selectedFleet} planet={planet} onCloseModal={() => handleCloseResourcesModal()}/> : null}
       <Card containerStyle= {commonStyles.subContainer}>
           <Card.Title>Puerto espacial</Card.Title>
