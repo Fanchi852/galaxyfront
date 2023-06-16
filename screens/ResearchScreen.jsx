@@ -5,6 +5,7 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import { apiRequest } from '../services/API';
 import CustomNavigationButtons from '../components/CustomNavigationButtons';
 import Swal from 'sweetalert2';
+import { commonStyles } from '../styles/CommonStyles';
 
 const technologiesImages = {
   '1.jpg': require('../assets/technologies/1.jpg'),
@@ -27,11 +28,16 @@ const TotalScience = ({imperium}) => {
   const totalScience = imperium.cientificData;
 
   return (
-    <Card>
+    <Card containerStyle= {commonStyles.subContainer}>
       <Card.Title>Investigacion</Card.Title>
         <View style={styles.planetInfo}>
-          <Text>{`Ciencia acumulada: ${totalScience}`}</Text>
-          <Text>{`Los reportes con nuevos datos cientificos llegaran cada hora`}</Text>
+          <View style={[commonStyles.horizontalAlign, commonStyles.textContainer]}>
+            <Text style={commonStyles.texSubTitle}>Ciencia acumulada:</Text>
+            <Text style={commonStyles.textStyle}>{totalScience}</Text>
+          </View>
+          <View style={[commonStyles.horizontalAlign, commonStyles.textContainer]}>
+            <Text style={commonStyles.textStyle}>Los reportes con nuevos datos cientificos llegaran cada hora</Text>
+          </View>
         </View>
     </Card>
   );
@@ -84,15 +90,37 @@ const SelectedResearch = ({ selectedTech }) => {
   };
 
   return (
-    <Card>
+    <Card containerStyle= {commonStyles.subContainer}>
       <Card.Title>Datos de la Tecnologia</Card.Title>
         <View style={styles.planetInfo}>
-          <Text>{`Nombre: ${selectedTech.name}`}</Text>
-          <Text>{`Nivel: ${selectedTech.level}`}</Text>
-          <Text>{`Descripción: ${selectedTech.descripcion}`}</Text>
-          <Text>{`Bono: ${selectedTech.bono}`}</Text>
-          <Text>{`Costo: ${selectedTech.basic_cost}`}</Text>
-          <Button title="Investigar" onPress={() => increaseLevel(selectedTech)} />
+
+          <View style={[commonStyles.horizontalAlignLeft, commonStyles.textContainer]}>
+            <Text style={[commonStyles.texSubTitleLeft, commonStyles.column1]}>Nombre:</Text>
+            <Text style={[commonStyles.textStyleLeft, commonStyles.column2]}>{selectedTech.name}</Text>
+          </View>
+          <View style={[commonStyles.horizontalAlign, commonStyles.textContainer]}>
+            <Text style={[commonStyles.texSubTitleLeft, commonStyles.column1]}>Nivel:</Text>
+            <Text style={[commonStyles.textStyleLeft, commonStyles.column2]}>{selectedTech.level}</Text>
+          </View>
+          <View style={[commonStyles.horizontalAlign, commonStyles.textContainer]}>
+            <Text style={[commonStyles.texSubTitleLeft, commonStyles.column1]}>Descripción:</Text>
+            <Text style={[commonStyles.textStyleLeft, commonStyles.column2]}>{selectedTech.descripcion}</Text>
+          </View>
+          <View style={[commonStyles.horizontalAlign, commonStyles.textContainer]}>
+            <Text style={[commonStyles.texSubTitleLeft, commonStyles.column1]}>Bono:</Text>
+            <Text style={[commonStyles.textStyleLeft, commonStyles.column2]}>{selectedTech.bono}</Text>
+          </View>
+          <View style={[commonStyles.horizontalAlign, commonStyles.textContainer]}>
+            <Text style={[commonStyles.texSubTitleLeft, commonStyles.column1]}>Costo:</Text>
+            <Text style={[commonStyles.textStyleLeft, commonStyles.column2]}>{selectedTech.basic_cost}</Text>
+          </View>
+          <View style={[commonStyles.horizontalAlign]}>
+              <Button
+                  title="Investigar"
+                  onPress={() => increaseLevel(selectedTech)}
+                  buttonStyle={[commonStyles.brandButton]}
+              />
+          </View>
         </View>
     </Card>
   );
@@ -107,30 +135,32 @@ const ResearchTree = ({ techList, techType, setTechType, setSelectedTech }) => {
   }, [techType, techList]);
 
   return (
-    <Card>
+    <Card containerStyle= {commonStyles.subContainer}>
       <Card.Title>Tecnologias</Card.Title>
           <View style={styles.planetInfo}>
-            <Button title="Tecnologías Militares" onPress={() => {
-                console.log("Militares button pressed");
-                setTechType('military');
-                console.log(`techType is now ${techType}`);
-                console.log(`techList is now ${techList}`);
-              }} />
-            <Button title="Tecnologías Industriales" onPress={() => {
-                console.log("Industriales button pressed");
-                setTechType('industrial');
-                console.log(`techType is now ${techType}`);
-                console.log(`techList is now ${techList}`);
-              }} />
+            <View style={[commonStyles.horizontalAlign]}>
+              <Button
+                title="Tecnologías Militares"
+                onPress={() => {setTechType('military');}}
+                buttonStyle={[commonStyles.brandButton]}
+                style={commonStyles.column2}
+              />
+              <Button
+                title="Tecnologías Industriales"
+                onPress={() => {setTechType('industrial');}}
+                buttonStyle={[commonStyles.brandButton]}
+                style={commonStyles.column2}
+              />
+            </View>
             <ScrollView>
               {filteredTechList.map(tech => (
                 <TouchableOpacity key={tech.technology_imperium_id} onPress={() => setSelectedTech(tech)}>
-                  <View style={{flexDirection: 'row'}}>
+                  <View style={[commonStyles.horizontalAlign]}>
                     <Image
-                      style={{width: 50, height: 50}}
-                      source={{uri : technologiesImages[tech.image]}} />
-                  
-                    <Text>{tech.name}</Text>
+                      style={[commonStyles.texSubTitleLeft, commonStyles.column1, {width: 80, height: 80}]}
+                      source={{uri : technologiesImages[tech.image]}}
+                    />
+                    <Text style={[commonStyles.texSubTitleLeft, commonStyles.column2, {marginLeft: "2%"}]}>{tech.name}</Text>
                   </View>
                 </TouchableOpacity>
               ))}
@@ -193,7 +223,7 @@ const ResearchScreen = () => {
   }, [imperium]);
 
   return (
-    <View>
+    <View style={commonStyles.container}>
       <TotalScience 
         imperium={imperium} 
       />

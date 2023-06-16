@@ -72,7 +72,7 @@ const HangarScreen = ({ route }) => {
 
   if(selectedPlanet && planets){
     return (
-      <View>
+      <View style={commonStyles.container}>
         <PlanetListBanner 
           planetList={planets}
           planet={selectedPlanet}

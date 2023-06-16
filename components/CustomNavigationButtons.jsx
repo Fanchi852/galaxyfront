@@ -1,17 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Button } from 'react-native-elements';
+import { commonStyles } from '../styles/CommonStyles';
 
 const CustomNavigationButtons = ({ navigation, buttonList }) => {
 
     return (
-        <View style={styles.menuButtons}>
+        <View style={[commonStyles.horizontalAlign]}>
             {buttonList.map(button => (
-                <Button 
-                key={button.key} 
-                title={button.label}
-                icon={{ name: 'flask', type: 'font-awesome' }}
-                onPress={() => navigation.navigate(button.navigationScreen, button.params)} />
+                <View key={button.key} style={[{margin:"1%", width: "170px"}]} >
+                    <Button 
+                    mode="contained"
+                    title={button.label}
+                    icon={{ name: 'flask', type: 'font-awesome' }}
+                    onPress={() => navigation.navigate(button.navigationScreen, button.params)}
+                    buttonStyle={[commonStyles.brandButton, {margin:"5%"}]}/>
+                </View>
             ))}
         </View>
     );

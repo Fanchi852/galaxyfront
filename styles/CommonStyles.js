@@ -14,6 +14,13 @@ export const commonStyles = StyleSheet.create({
     textAlign: 'center',
     color: '#757575',
   },
+  texSubTitleLeft: {
+    fontSize: 18,
+    flex: 1,
+    fontWeight: 'bold',
+    textAlign: 'left',
+    color: '#757575',
+  },
   textContainer: {
     flex: 1,
     padding: 5,
@@ -21,7 +28,8 @@ export const commonStyles = StyleSheet.create({
   brandButton: {
     backgroundColor: '#7C4DFF',
     borderRadius: 15,
-    margin: '1%'
+    margin: '1%',
+    width: 'fit-content'
   },
   horizontalAlign: {
     margin: '1%',
@@ -29,6 +37,21 @@ export const commonStyles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center'
+  },
+  horizontalAlignLeft: {
+    margin: '1%',
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  column1: {
+    flex: 0.4
+  },
+  column2: {
+    flex: 2
+  },
+  column3: {
+    flex: 0.9
   },
   inputLogin: {
     marginTop: '3%',

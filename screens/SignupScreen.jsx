@@ -102,37 +102,38 @@ const SignupScreen = () => {
   return (
     <View style={commonStyles.container}>
       <LinearGradient
-        colors={['#00f260', '#0575e6']}
+        colors={['#CFD8DC', '#455A64']}
         style={commonStyles.container}
       >
         <View>
-            <Title style={commonStyles.title}>REGISTRO</Title>
+            <Title style={commonStyles.texTitle}>REGISTRO</Title>
             <TextInput
                 placeholder="Nick"
                 value={nick}
                 onChangeText={setNick}
-                style={commonStyles.input}
+                style={commonStyles.inputLogin}
             />
             <TextInput
                 placeholder="Email"
                 value={email}
                 onChangeText={setEmail}
-                style={commonStyles.input}
+                style={commonStyles.inputLogin}
             />
             <TextInput
                 placeholder="Contraseña"
                 value={password}
                 onChangeText={setPassword}
                 secureTextEntry
-                style={commonStyles.input}
+                style={commonStyles.inputLogin}
             />
-            <Button title="Registrarse" mode="contained" onPress={handleSignup} style={commonStyles.button}>
-            Registrarse
-            </Button>
-            
-            <Button title="Volver atras" mode="contained" onPress={() =>navigation.navigate('Login')} style={commonStyles.button}>
-            Volver atras
-            </Button>
+            <View style={commonStyles.horizontalAlign}>
+              <Button title="Registrarse" mode="contained" onPress={handleSignup} style={commonStyles.brandButton}>
+                Registrarse
+              </Button>
+              <Button title="Volver atras" mode="contained" onPress={() =>navigation.navigate('Login')} style={commonStyles.brandButton}>
+                Volver atras
+              </Button>
+            </View>
           </View>
           <View>
             <AlertModal
