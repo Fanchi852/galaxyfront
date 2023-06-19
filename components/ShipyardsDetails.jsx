@@ -5,6 +5,7 @@ import { apiRequest } from '../services/API';
 import {Picker} from '@react-native-picker/picker';
 import AlertModal from '../components/AlertModal';
 import { commonStyles } from '../styles/CommonStyles';
+import { TextInput } from 'react-native-paper';
 
 const shipsImages = {
     'Acorazado': require('../assets/ships/acorazado.jpeg'),
@@ -26,6 +27,9 @@ const ShipyardsDetails = ({ planet, onReload }) => {
     //los recursos son minerales normales, minerales raros, y personal
     var [alertModalVisible, setAlertModalVisible] = useState(false);
     const [alertModalData, setAlertModalData] = useState({});
+    const [fleetName, setFleetName] = useState('');
+    const [fleetDescription, setFleetDescription] = useState('');
+    const [fleetType, setFleetType] = useState('');
 
     async function handleCloseAlertModal(){
         setAlertModalVisible(false);
@@ -187,9 +191,32 @@ const ShipyardsDetails = ({ planet, onReload }) => {
                                 ))}
                             </Picker>
                         </View>
+                        <View>
+                            <TextInput
+                                label="nombre"
+                                value={fleetName}
+                                onChangeText={(text) => setFleetName(text)}
+                                style={commonStyles.inputLogin}
+                                secureTextEntry
+                            />
+                            <TextInput
+                                label="descripcion"
+                                value={fleetDescription}
+                                onChangeText={(text) => setFleetDescription(text)}
+                                style={commonStyles.inputLogin}
+                                secureTextEntry
+                            />
+                            <TextInput
+                                label="tipo"
+                                value={fleetType}
+                                onChangeText={(text) => setFleetType(text)}
+                                style={commonStyles.inputLogin}
+                                secureTextEntry
+                            />
+                        </View>
                         <View style={[commonStyles.horizontalAlign]}>
                             <Button
-                                title="Construir"
+                                title="Crear Flota"
                                 onPress={() => buildShip()}
                                 buttonStyle={[commonStyles.brandButton]}
                             />

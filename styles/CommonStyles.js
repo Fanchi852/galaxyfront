@@ -93,6 +93,8 @@ export const commonStyles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
+    //marginLeft: "10%",
+    //marginRight: "10%",
     //backgroundColor: '#2c3e50',
     backgroundColor: '#455A64',
     paddingHorizontal: 20,

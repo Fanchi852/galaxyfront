@@ -26,7 +26,7 @@ const SignupScreen = () => {
         setAlertModalData({
           title: 'Error!',
           text: 'Debes introducir todos los datos.',
-          icon: 'error',
+          icon: 'warning',
           buttons: [
             {
                 name: 'CLOSE',
@@ -48,8 +48,8 @@ const SignupScreen = () => {
       if (responseData == -1) {
         setAlertModalData({
           title: 'Error!',
-          text: 'credenciales incorrectas',
-          icon: 'error',
+          text: 'es posible que el usuario o el email ya existan',
+          icon: 'warning',
           buttons: [
             {
                 name: 'CLOSE',
@@ -61,22 +61,7 @@ const SignupScreen = () => {
         })
         setAlertModalVisible(true);
         
-      } else {
-        setAlertModalData({
-          title: 'Correcto!',
-          text: 'Registro correcto. Ahora puedes iniciar sesión.',
-          icon: 'success',
-          buttons: [
-            {
-                name: 'CLOSE',
-                text: 'Aceptar',
-                syle: commonStyles.buttonOk,
-                textStyle: commonStyles.textStyle
-            }
-        ]
-        })
-        setAlertModalVisible(true);
-        
+      } else {  
         navigation.navigate('Login');
       }
 
@@ -85,7 +70,7 @@ const SignupScreen = () => {
       setAlertModalData({
         title: 'Error!',
         text: 'Error inesperado. Inténtalo de nuevo más tarde.',
-        icon: 'error',
+        icon: 'warning',
         buttons: [
           {
               name: 'CLOSE',
